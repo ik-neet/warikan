@@ -16,6 +16,7 @@ export default function Session() {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [expiresAt, setExpiresAt] = useState(null)
 
   const [form, setForm] = useState({ payer: '', description: '', amount: '' })
   const [formError, setFormError] = useState('')
@@ -40,6 +41,9 @@ export default function Session() {
         return
       }
       setSession({ id: snap.id, ...snap.data() })
+      const saved = JSON.parse(localStorage.getItem('warikan_sessions') || '[]')
+      const entry = saved.find(s => s.id === snap.id)
+      if (entry) setExpiresAt(entry.expiresAt)
       setLoading(false)
     }
     fetchSession()
@@ -79,6 +83,17 @@ export default function Session() {
       setFormError('追加に失敗しました')
     }
     setSubmitting(false)
+  }
+
+  const handleRemoveMember = async (index) => {
+    if (session.members.length <= 2) { setMemberError('メンバーは2人以上必要です'); return }
+    const updatedMembers = session.members.filter((_, i) => i !== index)
+    try {
+      await updateDoc(doc(db, 'sessions', id), { members: updatedMembers })
+      setSession(prev => ({ ...prev, members: updatedMembers }))
+    } catch {
+      setMemberError('削除に失敗しました')
+    }
   }
 
   const handleAddMember = async () => {
@@ -184,8 +199,21 @@ export default function Session() {
 
       <div className="members-summary">
         <h2>メンバー</h2>
+        <div className="session-meta">
+          {session.createdAt && (
+            <span>作成日: {session.createdAt.toDate().toLocaleDateString('ja-JP')}</span>
+          )}
+          {expiresAt && (
+            <span>有効期限: {new Date(expiresAt).toLocaleDateString('ja-JP')}</span>
+          )}
+        </div>
         <div className="member-chips">
-          {session.members.map((m, i) => <span key={i} className="chip">{m}</span>)}
+          {session.members.map((m, i) => (
+            <span key={i} className="chip">
+              {m}
+              <button className="btn-remove-member" onClick={() => handleRemoveMember(i)} title="削除">×</button>
+            </span>
+          ))}
         </div>
         <div className="add-member-row">
           <input

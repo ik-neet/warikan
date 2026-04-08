@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, getCountFromServer } from 'firebase/firestore'
 import { db } from '../firebase'
 import '../styles/NewSession.css'
 
@@ -32,6 +32,12 @@ export default function NewSession() {
     setLoading(true)
     setError('')
     try {
+      const countSnap = await getCountFromServer(collection(db, 'sessions'))
+      if (countSnap.data().count >= 100) {
+        setError('セッション数が上限（100個）に達しています。既存のセッションを削除してから再度お試しください。')
+        setLoading(false)
+        return
+      }
       const docRef = await addDoc(collection(db, 'sessions'), {
         members: validMembers,
         createdAt: serverTimestamp(),

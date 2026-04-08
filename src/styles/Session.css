@@ -34,6 +34,22 @@
 }
 .btn-share:hover { background: #38a169; }
 
+.url-display {
+  background: white;
+  border-radius: 10px;
+  padding: 10px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.url-text {
+  font-size: 13px;
+  color: #4a5568;
+  word-break: break-all;
+}
+
 .members-summary {
   background: white;
   border-radius: 12px;

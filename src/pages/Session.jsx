@@ -112,10 +112,14 @@ export default function Session() {
         </button>
       </div>
 
+      <div className="url-display">
+        <span className="url-text">{window.location.href}</span>
+      </div>
+
       <div className="members-summary">
         <h2>メンバー</h2>
         <div className="member-chips">
-          {session.members.map((m) => <span key={m} className="chip">{m}</span>)}
+          {session.members.map((m, i) => <span key={i} className="chip">{m}</span>)}
         </div>
       </div>
 
@@ -134,7 +138,7 @@ export default function Session() {
               onChange={(e) => setForm({ ...form, payer: e.target.value })}
             >
               <option value="">支払い者を選択</option>
-              {session.members.map((m) => <option key={m} value={m}>{m}</option>)}
+              {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
             </select>
             <input
               type="number"
@@ -191,10 +195,10 @@ export default function Session() {
                 <tr><th>名前</th><th>支払い済み</th><th>差額</th></tr>
               </thead>
               <tbody>
-                {memberTotals.map(({ name, paid }) => {
+                {memberTotals.map(({ name, paid }, i) => {
                   const diff = paid - perPerson
                   return (
-                    <tr key={name}>
+                    <tr key={i}>
                       <td>{name}</td>
                       <td className="amount">¥{paid.toLocaleString()}</td>
                       <td className={diff >= 0 ? 'positive' : 'negative'}>

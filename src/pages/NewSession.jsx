@@ -29,12 +29,6 @@ export default function NewSession() {
       setError('メンバーを2人以上入力してください')
       return
     }
-    const uniqueMembers = [...new Set(validMembers)]
-    if (uniqueMembers.length !== validMembers.length) {
-      setError('同じ名前のメンバーがいます')
-      return
-    }
-
     setLoading(true)
     setError('')
     try {

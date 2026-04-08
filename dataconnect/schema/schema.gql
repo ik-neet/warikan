@@ -1,0 +1,35 @@
+type User @table {
+  displayName: String!
+  createdAt: Timestamp!
+  email: String
+  photoUrl: String
+}
+
+type Event @table {
+  creator: User!
+  name: String!
+  createdAt: Timestamp!
+  startDate: Date!
+  description: String
+  endDate: Date
+}
+
+type Participant @table {
+  event: Event!
+  user: User
+  name: String!
+}
+
+type Expense @table {
+  event: Event!
+  paidByParticipant: Participant!
+  description: String!
+  amount: Float!
+  createdAt: Timestamp!
+}
+
+type ExpenseAllocation @table(key: ["expense", "participant"]) {
+  expense: Expense!
+  participant: Participant!
+  amount: Float!
+}

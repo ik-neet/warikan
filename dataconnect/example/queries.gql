@@ -1,0 +1,11 @@
+mutation CreateEvent($name: String!, $startDate: Date!, $description: String, $endDate: Date) @auth(level: USER) {
+  event_insert(data: {
+    name: $name,
+    startDate: $startDate,
+    description: $description,
+    endDate: $endDate,
+    creatorId_expr: "auth.uid"
+  }) {
+    id
+  }
+}

@@ -1,0 +1,119 @@
+mutation CreateDemoData @transaction @auth(level: USER, insecureReason: "This operation is for seeding data and does not expose sensitive information.") {
+  user_insertMany(data: [
+    {
+      id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      displayName: "Alice",
+      email: "alice@example.com",
+      createdAt: "2023-10-27T10:00:00Z"
+    },
+    {
+      id: "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      displayName: "Bob",
+      email: "bob@example.com",
+      createdAt: "2023-10-27T10:05:00Z"
+    }
+  ])
+  event_insertMany(data: [
+    {
+      id: "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+      creatorId: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      name: "Dinner Party",
+      description: "A fun dinner party with friends",
+      startDate: "2023-11-15",
+      createdAt: "2023-10-27T11:00:00Z"
+    },
+    {
+      id: "d3e4f5a6-b7c8-9d0e-1f2a-3b4c5d6e7f8a",
+      creatorId: "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      name: "Weekend Trip",
+      description: "Exploring a new city",
+      startDate: "2023-12-01",
+      endDate: "2023-12-03",
+      createdAt: "2023-10-27T11:30:00Z"
+    }
+  ])
+  participant_insertMany(data: [
+    {
+      id: "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+      eventId: "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+      userId: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      name: "Alice"
+    },
+    {
+      id: "f5a6b7c8-d9e0-1f2a-3b4c-5d6e7f8a9b0c",
+      eventId: "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+      userId: "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      name: "Bob"
+    },
+    {
+      id: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      eventId: "d3e4f5a6-b7c8-9d0e-1f2a-3b4c5d6e7f8a",
+      userId: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+      name: "Alice"
+    },
+    {
+      id: "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+      eventId: "d3e4f5a6-b7c8-9d0e-1f2a-3b4c5d6e7f8a",
+      userId: "b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e",
+      name: "Bob"
+    }
+  ])
+  expense_insertMany(data: [
+    {
+      id: "g6h7i8j9-k0l1-m2n3-o4p5-q6r7s8t9u0v1",
+      eventId: "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+      paidByParticipantId: "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+      description: "Groceries for dinner",
+      amount: 50.00,
+      createdAt: "2023-11-10T14:00:00Z"
+    },
+    {
+      id: "h7i8j9k0-l1m2-n3o4-p5q6-r7s8t9u0v1w2",
+      eventId: "c2d3e4f5-a6b7-8c9d-0e1f-2a3b4c5d6e7f",
+      paidByParticipantId: "f5a6b7c8-d9e0-1f2a-3b4c-5d6e7f8a9b0c",
+      description: "Wine",
+      amount: 25.50,
+      createdAt: "2023-11-10T14:30:00Z"
+    },
+    {
+      id: "i8j9k0l1-m2n3-o4p5-q6r7-s8t9u0v1w2x3",
+      eventId: "d3e4f5a6-b7c8-9d0e-1f2a-3b4c5d6e7f8a",
+      paidByParticipantId: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      description: "Accommodation",
+      amount: 200.00,
+      createdAt: "2023-11-20T09:00:00Z"
+    }
+  ])
+  expenseAllocation_insertMany(data: [
+    {
+      expenseId: "g6h7i8j9-k0l1-m2n3-o4p5-q6r7s8t9u0v1",
+      participantId: "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+      amount: 25.00
+    },
+    {
+      expenseId: "g6h7i8j9-k0l1-m2n3-o4p5-q6r7s8t9u0v1",
+      participantId: "f5a6b7c8-d9e0-1f2a-3b4c-5d6e7f8a9b0c",
+      amount: 25.00
+    },
+    {
+      expenseId: "h7i8j9k0-l1m2-n3o4-p5q6-r7s8t9u0v1w2",
+      participantId: "e4f5a6b7-c8d9-0e1f-2a3b-4c5d6e7f8a9b",
+      amount: 12.75
+    },
+    {
+      expenseId: "h7i8j9k0-l1m2-n3o4-p5q6-r7s8t9u0v1w2",
+      participantId: "f5a6b7c8-d9e0-1f2a-3b4c-5d6e7f8a9b0c",
+      amount: 12.75
+    },
+    {
+      expenseId: "i8j9k0l1-m2n3-o4p5-q6r7-s8t9u0v1w2x3",
+      participantId: "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      amount: 100.00
+    },
+    {
+      expenseId: "i8j9k0l1-m2n3-o4p5-q6r7-s8t9u0v1w2x3",
+      participantId: "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+      amount: 100.00
+    }
+  ])
+}

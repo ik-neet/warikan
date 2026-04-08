@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   doc, getDoc, collection, addDoc, onSnapshot,
-  deleteDoc, serverTimestamp, query, orderBy
+  deleteDoc, getDocs, serverTimestamp, query, orderBy
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { calcSettlements } from '../utils/calcSettlements'
@@ -77,6 +77,20 @@ export default function Session() {
   const handleDelete = async (paymentId) => {
     if (!confirm('この支払いを削除しますか？')) return
     await deleteDoc(doc(db, 'sessions', id, 'payments', paymentId))
+  }
+
+  const handleDeleteSession = async () => {
+    if (!confirm('このセッションを削除しますか？\nこの操作は元に戻せません。')) return
+    try {
+      const snap = await getDocs(collection(db, 'sessions', id, 'payments'))
+      await Promise.all(snap.docs.map(d => deleteDoc(d.ref)))
+      await deleteDoc(doc(db, 'sessions', id))
+      const saved = JSON.parse(localStorage.getItem('warikan_sessions') || '[]')
+      localStorage.setItem('warikan_sessions', JSON.stringify(saved.filter(s => s.id !== id)))
+      navigate('/')
+    } catch {
+      alert('削除に失敗しました')
+    }
   }
 
   const handleCopyUrl = () => {
@@ -230,6 +244,11 @@ export default function Session() {
           </div>
         </>
       )}
+      <div className="section-delete">
+        <button className="btn-delete-session" onClick={handleDeleteSession}>
+          このセッションを削除
+        </button>
+      </div>
     </div>
   )
 }

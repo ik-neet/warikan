@@ -36,6 +36,9 @@ export default function NewSession() {
         members: validMembers,
         createdAt: serverTimestamp(),
       })
+      const saved = JSON.parse(localStorage.getItem('warikan_sessions') || '[]')
+      saved.unshift({ id: docRef.id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 })
+      localStorage.setItem('warikan_sessions', JSON.stringify(saved))
       navigate(`/session/${docRef.id}`)
     } catch (e) {
       setError('セッションの作成に失敗しました')

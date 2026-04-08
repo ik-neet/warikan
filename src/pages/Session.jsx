@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   doc, getDoc, collection, addDoc, onSnapshot,
-  deleteDoc, getDocs, serverTimestamp, query, orderBy
+  deleteDoc, getDocs, serverTimestamp, query, orderBy, updateDoc
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { calcSettlements } from '../utils/calcSettlements'
@@ -15,12 +15,20 @@ export default function Session() {
   const [payments, setPayments] = useState([])
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
-  const [showForm, setShowForm] = useState(false)
   const [copied, setCopied] = useState(false)
 
-  const [form, setForm] = useState({ payer: '', amount: '', description: '' })
+  const [form, setForm] = useState({ payer: '', description: '', amount: '' })
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const [newMember, setNewMember] = useState('')
+  const [addingMember, setAddingMember] = useState(false)
+  const [memberError, setMemberError] = useState('')
+
+  const [editingId, setEditingId] = useState(null)
+  const [editForm, setEditForm] = useState({ payer: '', description: '', amount: '' })
+  const [editError, setEditError] = useState('')
+  const [editSubmitting, setEditSubmitting] = useState(false)
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -66,17 +74,61 @@ export default function Session() {
         description: description || '支払い',
         createdAt: serverTimestamp(),
       })
-      setForm({ payer: '', amount: '', description: '' })
-      setShowForm(false)
+      setForm({ payer: '', description: '', amount: '' })
     } catch {
       setFormError('追加に失敗しました')
     }
     setSubmitting(false)
   }
 
+  const handleAddMember = async () => {
+    const name = newMember.trim()
+    if (!name) { setMemberError('名前を入力してください'); return }
+    setAddingMember(true)
+    setMemberError('')
+    try {
+      const updatedMembers = [...session.members, name]
+      await updateDoc(doc(db, 'sessions', id), { members: updatedMembers })
+      setSession(prev => ({ ...prev, members: updatedMembers }))
+      setNewMember('')
+    } catch {
+      setMemberError('追加に失敗しました')
+    }
+    setAddingMember(false)
+  }
+
   const handleDelete = async (paymentId) => {
     if (!confirm('この支払いを削除しますか？')) return
     await deleteDoc(doc(db, 'sessions', id, 'payments', paymentId))
+  }
+
+  const handleEditStart = (p) => {
+    setEditingId(p.id)
+    setEditForm({ payer: p.payer, description: p.description, amount: String(p.amount) })
+    setEditError('')
+  }
+
+  const handleEditSave = async () => {
+    const payer = editForm.payer.trim()
+    const amount = parseFloat(editForm.amount)
+    const description = editForm.description.trim()
+
+    if (!payer) { setEditError('支払い者を選択してください'); return }
+    if (!editForm.amount || isNaN(amount) || amount <= 0) { setEditError('金額を正しく入力してください'); return }
+
+    setEditSubmitting(true)
+    setEditError('')
+    try {
+      await updateDoc(doc(db, 'sessions', id, 'payments', editingId), {
+        payer,
+        amount,
+        description: description || '支払い',
+      })
+      setEditingId(null)
+    } catch {
+      setEditError('更新に失敗しました')
+    }
+    setEditSubmitting(false)
   }
 
   const handleDeleteSession = async () => {
@@ -120,7 +172,7 @@ export default function Session() {
     <div className="session-container">
       <div className="session-header">
         <button className="btn-back" onClick={() => navigate('/')}>← ホーム</button>
-        <h1>割り勘セッション</h1>
+        <h1>支払管理画面</h1>
         <button className="btn-share" onClick={handleCopyUrl}>
           {copied ? 'コピーしました！' : 'URLをコピー'}
         </button>
@@ -135,46 +187,60 @@ export default function Session() {
         <div className="member-chips">
           {session.members.map((m, i) => <span key={i} className="chip">{m}</span>)}
         </div>
+        <div className="add-member-row">
+          <input
+            type="text"
+            className="add-member-input"
+            placeholder="メンバーを追加"
+            value={newMember}
+            onChange={(e) => setNewMember(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddMember()}
+            maxLength={20}
+          />
+          <button className="btn-add-member" onClick={handleAddMember} disabled={addingMember}>
+            {addingMember ? '...' : '追加'}
+          </button>
+        </div>
+        {memberError && <p className="error-text">{memberError}</p>}
+      </div>
+
+      <div className="section">
+        <div className="section-header">
+          <h2>支払い追加</h2>
+        </div>
+        <div className="payment-form">
+          <select
+            value={form.payer}
+            onChange={(e) => setForm({ ...form, payer: e.target.value })}
+          >
+            <option value="">支払い者を選択</option>
+            {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
+          </select>
+          <input
+            type="text"
+            placeholder="内容 (例: 夕食代)"
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            maxLength={50}
+          />
+          <input
+            type="number"
+            placeholder="金額 (円)"
+            value={form.amount}
+            onChange={(e) => setForm({ ...form, amount: e.target.value })}
+            min="1"
+          />
+          {formError && <p className="error-text">{formError}</p>}
+          <button className="btn-primary" onClick={handleAddPayment} disabled={submitting}>
+            {submitting ? '追加中...' : '追加'}
+          </button>
+        </div>
       </div>
 
       <div className="section">
         <div className="section-header">
           <h2>支払い一覧</h2>
-          <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'キャンセル' : '+ 支払い追加'}
-          </button>
         </div>
-
-        {showForm && (
-          <div className="payment-form">
-            <select
-              value={form.payer}
-              onChange={(e) => setForm({ ...form, payer: e.target.value })}
-            >
-              <option value="">支払い者を選択</option>
-              {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
-            </select>
-            <input
-              type="number"
-              placeholder="金額 (円)"
-              value={form.amount}
-              onChange={(e) => setForm({ ...form, amount: e.target.value })}
-              min="1"
-            />
-            <input
-              type="text"
-              placeholder="内容 (例: 夕食代)"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              maxLength={50}
-            />
-            {formError && <p className="error-text">{formError}</p>}
-            <button className="btn-primary" onClick={handleAddPayment} disabled={submitting}>
-              {submitting ? '追加中...' : '追加'}
-            </button>
-          </div>
-        )}
-
         {payments.length === 0 ? (
           <p className="empty-text">支払いがまだありません</p>
         ) : (
@@ -184,14 +250,54 @@ export default function Session() {
             </thead>
             <tbody>
               {payments.map((p) => (
-                <tr key={p.id}>
-                  <td>{p.payer}</td>
-                  <td>{p.description}</td>
-                  <td className="amount">¥{p.amount.toLocaleString()}</td>
-                  <td>
-                    <button className="btn-delete" onClick={() => handleDelete(p.id)}>削除</button>
-                  </td>
-                </tr>
+                editingId === p.id ? (
+                  <tr key={p.id}>
+                    <td>
+                      <select
+                        value={editForm.payer}
+                        onChange={(e) => setEditForm({ ...editForm, payer: e.target.value })}
+                        className="edit-select"
+                      >
+                        {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={editForm.description}
+                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                        className="edit-input"
+                        maxLength={50}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={editForm.amount}
+                        onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
+                        className="edit-input edit-amount"
+                        min="1"
+                      />
+                    </td>
+                    <td className="edit-actions">
+                      {editError && <p className="error-text" style={{fontSize:'11px',margin:'2px 0'}}>{editError}</p>}
+                      <button className="btn-save" onClick={handleEditSave} disabled={editSubmitting}>
+                        {editSubmitting ? '...' : '保存'}
+                      </button>
+                      <button className="btn-cancel-edit" onClick={() => setEditingId(null)}>✕</button>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr key={p.id}>
+                    <td>{p.payer}</td>
+                    <td>{p.description}</td>
+                    <td className="amount">¥{p.amount.toLocaleString()}</td>
+                    <td className="row-actions">
+                      <button className="btn-edit" onClick={() => handleEditStart(p)}>編集</button>
+                      <button className="btn-delete" onClick={() => handleDelete(p.id)}>削除</button>
+                    </td>
+                  </tr>
+                )
               ))}
             </tbody>
           </table>

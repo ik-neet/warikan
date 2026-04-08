@@ -6,7 +6,9 @@ service cloud.firestore {
       allow create: if request.resource.data.keys().hasAll(['members', 'createdAt'])
         && request.resource.data.members is list
         && request.resource.data.members.size() >= 2;
-      allow update: if false;
+      allow update: if request.resource.data.keys().hasAll(['members'])
+        && request.resource.data.members is list
+        && request.resource.data.members.size() >= 2;
       allow delete: if true;
 
       match /payments/{paymentId} {
@@ -15,7 +17,8 @@ service cloud.firestore {
           && request.resource.data.amount is number
           && request.resource.data.amount > 0;
         allow delete: if true;
-        allow update: if false;
+        allow update: if request.resource.data.amount is number
+          && request.resource.data.amount > 0;
       }
     }
   }

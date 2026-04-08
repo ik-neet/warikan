@@ -68,7 +68,38 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 12px;
 }
+
+.add-member-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.add-member-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+.add-member-input:focus { border-color: #4f7df0; }
+
+.btn-add-member {
+  background: #4f7df0;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-add-member:hover { background: #3a6de0; }
+.btn-add-member:disabled { opacity: 0.6; cursor: default; }
 
 .chip {
   background: #ebf0ff;
@@ -180,6 +211,23 @@ td.negative {
   text-align: right;
 }
 
+.row-actions {
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.btn-edit {
+  background: none;
+  border: 1px solid #e2e8f0;
+  color: #4f7df0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-edit:hover { background: #ebf0ff; border-color: #4f7df0; }
+
 .btn-delete {
   background: none;
   border: 1px solid #e2e8f0;
@@ -190,6 +238,50 @@ td.negative {
   cursor: pointer;
 }
 .btn-delete:hover { color: #e53e3e; border-color: #e53e3e; background: #fff5f5; }
+
+.edit-select,
+.edit-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1.5px solid #4f7df0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.edit-amount { width: 80px; }
+
+.edit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  white-space: nowrap;
+}
+
+.btn-save {
+  background: #4f7df0;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-save:hover { background: #3a6de0; }
+.btn-save:disabled { opacity: 0.6; cursor: default; }
+
+.btn-cancel-edit {
+  background: none;
+  border: 1px solid #e2e8f0;
+  color: #999;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-cancel-edit:hover { color: #e53e3e; border-color: #e53e3e; }
 
 .total-label {
   font-size: 15px;

@@ -371,6 +371,9 @@ export default function Session() {
                     <span className="arrow">→</span>
                     <span className="creditor">{s.to}</span>
                     <span className="settlement-amount">¥{s.amount.toLocaleString()}</span>
+                    <a href="paypay://" className="btn-paypay">
+                      PayPayで送金
+                    </a>
                   </li>
                 ))}
               </ul>

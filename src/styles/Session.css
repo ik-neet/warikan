@@ -325,6 +325,7 @@ td.negative {
   background: #f7fafc;
   padding: 12px 16px;
   border-radius: 10px;
+  flex-wrap: wrap;
 }
 
 .debtor { font-weight: 600; color: #e53e3e; }
@@ -336,6 +337,20 @@ td.negative {
   font-size: 16px;
   color: #1a202c;
 }
+
+.btn-paypay {
+  display: inline-block;
+  background: #eb0000;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-paypay:hover { background: #c50000; }
 
 .section-delete {
   display: flex;

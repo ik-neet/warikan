@@ -18,7 +18,7 @@ export default function Session() {
   const [copied, setCopied] = useState(false)
   const [expiresAt, setExpiresAt] = useState(null)
 
-  const [form, setForm] = useState({ payer: '', description: '', amount: '' })
+  const [form, setForm] = useState({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -27,7 +27,7 @@ export default function Session() {
   const [memberError, setMemberError] = useState('')
 
   const [editingId, setEditingId] = useState(null)
-  const [editForm, setEditForm] = useState({ payer: '', description: '', amount: '' })
+  const [editForm, setEditForm] = useState({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
   const [editError, setEditError] = useState('')
   const [editSubmitting, setEditSubmitting] = useState(false)
 
@@ -66,8 +66,10 @@ export default function Session() {
     const amount = parseFloat(form.amount)
     const description = form.description.trim()
 
-    if (!payer) { setFormError('支払い者を選択してください'); return }
+    if (!payer) { setFormError('お金を払った人を選択してください'); return }
     if (!form.amount || isNaN(amount) || amount <= 0) { setFormError('金額を正しく入力してください'); return }
+    if (form.isAdvance && !form.advancedFor) { setFormError('立て替えされた人を選択してください'); return }
+    if (form.isAdvance && form.advancedFor === payer) { setFormError('立て替えした人と立て替えされた人が同じです'); return }
 
     setSubmitting(true)
     setFormError('')
@@ -75,10 +77,12 @@ export default function Session() {
       await addDoc(collection(db, 'sessions', id, 'payments'), {
         payer,
         amount,
-        description: description || '支払い',
+        description: description || (form.isAdvance ? '立て替え' : '支払い'),
+        isAdvance: form.isAdvance,
+        advancedFor: form.isAdvance ? form.advancedFor : '',
         createdAt: serverTimestamp(),
       })
-      setForm({ payer: '', description: '', amount: '' })
+      setForm({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
     } catch {
       setFormError('追加に失敗しました')
     }
@@ -119,7 +123,13 @@ export default function Session() {
 
   const handleEditStart = (p) => {
     setEditingId(p.id)
-    setEditForm({ payer: p.payer, description: p.description, amount: String(p.amount) })
+    setEditForm({
+      payer: p.payer,
+      description: p.description,
+      amount: String(p.amount),
+      isAdvance: p.isAdvance || false,
+      advancedFor: p.advancedFor || '',
+    })
     setEditError('')
   }
 
@@ -128,8 +138,10 @@ export default function Session() {
     const amount = parseFloat(editForm.amount)
     const description = editForm.description.trim()
 
-    if (!payer) { setEditError('支払い者を選択してください'); return }
+    if (!payer) { setEditError('お金を払った人を選択してください'); return }
     if (!editForm.amount || isNaN(amount) || amount <= 0) { setEditError('金額を正しく入力してください'); return }
+    if (editForm.isAdvance && !editForm.advancedFor) { setEditError('立て替えされた人を選択してください'); return }
+    if (editForm.isAdvance && editForm.advancedFor === payer) { setEditError('立て替えした人と立て替えされた人が同じです'); return }
 
     setEditSubmitting(true)
     setEditError('')
@@ -137,7 +149,9 @@ export default function Session() {
       await updateDoc(doc(db, 'sessions', id, 'payments', editingId), {
         payer,
         amount,
-        description: description || '支払い',
+        description: description || (editForm.isAdvance ? '立て替え' : '支払い'),
+        isAdvance: editForm.isAdvance,
+        advancedFor: editForm.isAdvance ? editForm.advancedFor : '',
       })
       setEditingId(null)
     } catch {
@@ -174,13 +188,27 @@ export default function Session() {
     </div>
   )
 
-  const totalAmount = payments.reduce((sum, p) => sum + p.amount, 0)
-  const perPerson = session.members.length > 0 ? totalAmount / session.members.length : 0
+  const normalPayments = payments.filter(p => !p.isAdvance)
+  const advancePayments = payments.filter(p => p.isAdvance)
+  const normalTotal = normalPayments.reduce((sum, p) => sum + p.amount, 0)
+  const advanceTotal = advancePayments.reduce((sum, p) => sum + p.amount, 0)
+  const totalAmount = normalTotal + advanceTotal
+  const perPerson = session.members.length > 0 ? normalTotal / session.members.length : 0
   const settlements = calcSettlements(session.members, payments)
+
+  const balanceMap = {}
+  session.members.forEach(m => { balanceMap[m] = 0 })
+  normalPayments.forEach(p => { balanceMap[p.payer] = (balanceMap[p.payer] || 0) + p.amount })
+  session.members.forEach(m => { balanceMap[m] -= perPerson })
+  advancePayments.forEach(p => {
+    if (balanceMap[p.payer] !== undefined) balanceMap[p.payer] += p.amount
+    if (p.advancedFor && balanceMap[p.advancedFor] !== undefined) balanceMap[p.advancedFor] -= p.amount
+  })
 
   const memberTotals = session.members.map((m) => ({
     name: m,
     paid: payments.filter((p) => p.payer === m).reduce((s, p) => s + p.amount, 0),
+    balance: Math.round(balanceMap[m] || 0),
   }))
 
   return (
@@ -239,9 +267,9 @@ export default function Session() {
         <div className="payment-form">
           <select
             value={form.payer}
-            onChange={(e) => setForm({ ...form, payer: e.target.value })}
+            onChange={(e) => setForm({ ...form, payer: e.target.value, advancedFor: '' })}
           >
-            <option value="">支払い者を選択</option>
+            <option value="">{form.isAdvance ? 'お金を払った人を選択' : '支払い者を選択'}</option>
             {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
           </select>
           <input
@@ -258,6 +286,23 @@ export default function Session() {
             onChange={(e) => setForm({ ...form, amount: e.target.value })}
             min="1"
           />
+          <label className="advance-checkbox-label">
+            <input
+              type="checkbox"
+              checked={form.isAdvance}
+              onChange={(e) => setForm({ ...form, isAdvance: e.target.checked, advancedFor: '' })}
+            />
+            立て替え
+          </label>
+          {form.isAdvance && (
+            <select
+              value={form.advancedFor}
+              onChange={(e) => setForm({ ...form, advancedFor: e.target.value })}
+            >
+              <option value="">立て替えされた人を選択</option>
+              {session.members.filter(m => m !== form.payer).map((m, i) => <option key={i} value={m}>{m}</option>)}
+            </select>
+          )}
           {formError && <p className="error-text">{formError}</p>}
           <button className="btn-primary" onClick={handleAddPayment} disabled={submitting}>
             {submitting ? '追加中...' : '追加'}
@@ -283,20 +328,40 @@ export default function Session() {
                     <td>
                       <select
                         value={editForm.payer}
-                        onChange={(e) => setEditForm({ ...editForm, payer: e.target.value })}
+                        onChange={(e) => setEditForm({ ...editForm, payer: e.target.value, advancedFor: '' })}
                         className="edit-select"
                       >
                         {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
                       </select>
                     </td>
                     <td>
-                      <input
-                        type="text"
-                        value={editForm.description}
-                        onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                        className="edit-input"
-                        maxLength={50}
-                      />
+                      <div className="edit-description-cell">
+                        <input
+                          type="text"
+                          value={editForm.description}
+                          onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                          className="edit-input"
+                          maxLength={50}
+                        />
+                        <label className="advance-checkbox-label advance-checkbox-small">
+                          <input
+                            type="checkbox"
+                            checked={editForm.isAdvance}
+                            onChange={(e) => setEditForm({ ...editForm, isAdvance: e.target.checked, advancedFor: '' })}
+                          />
+                          立て替え
+                        </label>
+                        {editForm.isAdvance && (
+                          <select
+                            value={editForm.advancedFor}
+                            onChange={(e) => setEditForm({ ...editForm, advancedFor: e.target.value })}
+                            className="edit-select"
+                          >
+                            <option value="">立て替えされた人</option>
+                            {session.members.filter(m => m !== editForm.payer).map((m, i) => <option key={i} value={m}>{m}</option>)}
+                          </select>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <input
@@ -318,7 +383,14 @@ export default function Session() {
                 ) : (
                   <tr key={p.id}>
                     <td>{p.payer}</td>
-                    <td>{p.description}</td>
+                    <td>
+                      <div className="payment-description-cell">
+                        <span>{p.description}</span>
+                        {p.isAdvance && (
+                          <span className="advance-badge">立替→{p.advancedFor}</span>
+                        )}
+                      </div>
+                    </td>
                     <td className="amount">¥{p.amount.toLocaleString()}</td>
                     <td className="row-actions">
                       <button className="btn-edit" onClick={() => handleEditStart(p)}>編集</button>
@@ -336,25 +408,31 @@ export default function Session() {
         <>
           <div className="section">
             <h2>支払い集計</h2>
-            <p className="total-label">合計: <strong>¥{totalAmount.toLocaleString()}</strong></p>
-            <p className="total-label">1人あたり: <strong>¥{Math.ceil(perPerson).toLocaleString()}</strong></p>
+            {advancePayments.length > 0 ? (
+              <>
+                <p className="total-label">通常合計: <strong>¥{normalTotal.toLocaleString()}</strong>　1人あたり: <strong>¥{Math.ceil(perPerson).toLocaleString()}</strong></p>
+                <p className="total-label">立て替え合計: <strong>¥{advanceTotal.toLocaleString()}</strong></p>
+              </>
+            ) : (
+              <>
+                <p className="total-label">合計: <strong>¥{totalAmount.toLocaleString()}</strong></p>
+                <p className="total-label">1人あたり: <strong>¥{Math.ceil(perPerson).toLocaleString()}</strong></p>
+              </>
+            )}
             <table className="summary-table">
               <thead>
-                <tr><th>名前</th><th>支払い済み</th><th>差額</th></tr>
+                <tr><th>名前</th><th>支払い済み</th><th>収支</th></tr>
               </thead>
               <tbody>
-                {memberTotals.map(({ name, paid }, i) => {
-                  const diff = paid - perPerson
-                  return (
-                    <tr key={i}>
-                      <td>{name}</td>
-                      <td className="amount">¥{paid.toLocaleString()}</td>
-                      <td className={diff >= 0 ? 'positive' : 'negative'}>
-                        {diff >= 0 ? '+' : ''}¥{Math.round(diff).toLocaleString()}
-                      </td>
-                    </tr>
-                  )
-                })}
+                {memberTotals.map(({ name, paid, balance }, i) => (
+                  <tr key={i}>
+                    <td>{name}</td>
+                    <td className="amount">¥{paid.toLocaleString()}</td>
+                    <td className={balance >= 0 ? 'positive' : 'negative'}>
+                      {balance >= 0 ? '+' : ''}¥{balance.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

@@ -1,17 +1,28 @@
 /**
  * 最少精算回数で誰が誰にいくら払うかを計算する
  * @param {string[]} members
- * @param {{ payer: string, amount: number }[]} payments
+ * @param {{ payer: string, amount: number, isAdvance?: boolean, advancedFor?: string }[]} payments
  * @returns {{ from: string, to: string, amount: number }[]}
  */
 export function calcSettlements(members, payments) {
-  const total = payments.reduce((s, p) => s + p.amount, 0)
-  const perPerson = total / members.length
+  const normalPayments = payments.filter(p => !p.isAdvance)
+  const advancePayments = payments.filter(p => p.isAdvance)
+
+  const normalTotal = normalPayments.reduce((s, p) => s + p.amount, 0)
+  const perPerson = members.length > 0 ? normalTotal / members.length : 0
 
   const balance = {}
   members.forEach((m) => { balance[m] = 0 })
-  payments.forEach((p) => { balance[p.payer] = (balance[p.payer] || 0) + p.amount })
+
+  // 通常支払い：全員で均等割り
+  normalPayments.forEach((p) => { balance[p.payer] = (balance[p.payer] || 0) + p.amount })
   members.forEach((m) => { balance[m] -= perPerson })
+
+  // 立て替え支払い：立て替えされた人が全額を払った人に返済
+  advancePayments.forEach((p) => {
+    if (balance[p.payer] !== undefined) balance[p.payer] += p.amount
+    if (p.advancedFor && balance[p.advancedFor] !== undefined) balance[p.advancedFor] -= p.amount
+  })
 
   const creditors = []
   const debtors = []

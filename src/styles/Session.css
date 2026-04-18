@@ -373,3 +373,48 @@ td.negative {
   border-color: #e53e3e;
   background: #fff5f5;
 }
+
+.advance-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #4a5568;
+  cursor: pointer;
+  user-select: none;
+}
+
+.advance-checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #f6ad55;
+  cursor: pointer;
+}
+
+.advance-checkbox-small {
+  font-size: 12px;
+}
+
+.advance-badge {
+  display: inline-block;
+  background: #fefcbf;
+  color: #b7791f;
+  border: 1px solid #f6e05e;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.payment-description-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.edit-description-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

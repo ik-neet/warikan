@@ -294,6 +294,7 @@ export default function Session() {
             />
             立て替え
           </label>
+          <p className="advance-description">立て替えをした場合、その金額は割り勘にされず全額支払い者に精算されます</p>
           {form.isAdvance && (
             <select
               value={form.advancedFor}

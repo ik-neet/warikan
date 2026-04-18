@@ -269,7 +269,7 @@ export default function Session() {
             value={form.payer}
             onChange={(e) => setForm({ ...form, payer: e.target.value, advancedFor: '' })}
           >
-            <option value="">{form.isAdvance ? 'お金を払った人を選択' : '支払い者を選択'}</option>
+            <option value="">支払い者を選択</option>
             {session.members.map((m, i) => <option key={i} value={m}>{m}</option>)}
           </select>
           <input

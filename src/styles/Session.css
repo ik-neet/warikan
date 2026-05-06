@@ -447,6 +447,8 @@ td.negative {
   cursor: pointer;
   white-space: nowrap;
   transition: background 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn-calc:hover { background: #3a6de0; }
 
@@ -586,6 +588,9 @@ td.negative {
   cursor: pointer;
   color: #1a202c;
   transition: background 0.1s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .calc-btn:hover { background: #e2e8f0; }
 .calc-btn:active { background: #cbd5e0; }

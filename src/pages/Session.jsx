@@ -29,6 +29,7 @@ export default function Session() {
   const [addingMember, setAddingMember] = useState(false)
   const [memberError, setMemberError] = useState('')
 
+  const [listEditMode, setListEditMode] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [editForm, setEditForm] = useState({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
   const [editError, setEditError] = useState('')
@@ -332,13 +333,30 @@ export default function Session() {
       <div className="section">
         <div className="section-header">
           <h2>支払い一覧</h2>
+          {payments.length > 0 && (
+            <button
+              className={listEditMode ? 'btn-list-edit-done' : 'btn-list-edit'}
+              onClick={() => {
+                setListEditMode(m => !m)
+                setEditingId(null)
+                setEditError('')
+              }}
+            >
+              {listEditMode ? '完了' : '編集'}
+            </button>
+          )}
         </div>
         {payments.length === 0 ? (
           <p className="empty-text">支払いがまだありません</p>
         ) : (
           <table className="payments-table">
             <thead>
-              <tr><th>支払い者</th><th>内容</th><th>金額</th><th></th></tr>
+              <tr>
+                <th>支払い者</th>
+                <th>内容</th>
+                <th>金額</th>
+                {listEditMode && <th></th>}
+              </tr>
             </thead>
             <tbody>
               {payments.map((p) => (
@@ -424,10 +442,12 @@ export default function Session() {
                         <div className="expr-detail">{p.calcExpression}</div>
                       )}
                     </td>
-                    <td className="row-actions">
-                      <button className="btn-edit" onClick={() => handleEditStart(p)}>編集</button>
-                      <button className="btn-delete" onClick={() => handleDelete(p.id)}>削除</button>
-                    </td>
+                    {listEditMode && (
+                      <td className="row-actions">
+                        <button className="btn-edit" onClick={() => handleEditStart(p)}>編集</button>
+                        <button className="btn-delete" onClick={() => handleDelete(p.id)}>削除</button>
+                      </td>
+                    )}
                   </tr>
                 )
               ))}

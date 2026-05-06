@@ -149,6 +149,32 @@
   justify-content: space-between;
 }
 
+.btn-list-edit {
+  background: none;
+  border: 1px solid #4f7df0;
+  color: #4f7df0;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-list-edit:hover { background: #ebf0ff; }
+
+.btn-list-edit-done {
+  background: #4f7df0;
+  border: none;
+  color: white;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-list-edit-done:hover { background: #3a6de0; }
+
 .section h2 {
   font-size: 18px;
   font-weight: 700;

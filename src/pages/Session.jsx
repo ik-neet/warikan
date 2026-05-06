@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { calcSettlements } from '../utils/calcSettlements'
+import CalcModal from '../components/CalcModal'
 import '../styles/Session.css'
 
 export default function Session() {
@@ -18,7 +19,9 @@ export default function Session() {
   const [copied, setCopied] = useState(false)
   const [expiresAt, setExpiresAt] = useState(null)
 
-  const [form, setForm] = useState({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
+  const [form, setForm] = useState({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '', calcExpression: '' })
+  const [showCalc, setShowCalc] = useState(false)
+  const [expandedExprId, setExpandedExprId] = useState(null)
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
@@ -80,9 +83,10 @@ export default function Session() {
         description: description || (form.isAdvance ? '立て替え' : '支払い'),
         isAdvance: form.isAdvance,
         advancedFor: form.isAdvance ? form.advancedFor : '',
+        calcExpression: form.calcExpression || '',
         createdAt: serverTimestamp(),
       })
-      setForm({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '' })
+      setForm({ payer: '', description: '', amount: '', isAdvance: false, advancedFor: '', calcExpression: '' })
     } catch {
       setFormError('追加に失敗しました')
     }
@@ -211,8 +215,16 @@ export default function Session() {
     balance: Math.round(balanceMap[m] || 0),
   }))
 
+  const handleCalcConfirm = (amount, expression) => {
+    setForm(f => ({ ...f, amount: String(amount), calcExpression: expression }))
+    setShowCalc(false)
+  }
+
   return (
     <div className="session-container">
+      {showCalc && (
+        <CalcModal onConfirm={handleCalcConfirm} onClose={() => setShowCalc(false)} />
+      )}
       <div className="session-header">
         <button className="btn-back" onClick={() => navigate('/')}>← ホーム</button>
         <h1>支払管理画面</h1>
@@ -279,13 +291,19 @@ export default function Session() {
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             maxLength={50}
           />
-          <input
-            type="number"
-            placeholder="金額 (円)"
-            value={form.amount}
-            onChange={(e) => setForm({ ...form, amount: e.target.value })}
-            min="1"
-          />
+          <div className="amount-row">
+            <input
+              type="number"
+              placeholder="金額 (円)"
+              value={form.amount}
+              onChange={(e) => setForm({ ...form, amount: e.target.value, calcExpression: '' })}
+              min="1"
+            />
+            <button type="button" className="btn-calc" onClick={() => setShowCalc(true)}>電卓</button>
+          </div>
+          {form.calcExpression && (
+            <div className="calc-expr-preview">式: {form.calcExpression}</div>
+          )}
           <label className="advance-checkbox-label">
             <input
               type="checkbox"
@@ -392,7 +410,20 @@ export default function Session() {
                         )}
                       </div>
                     </td>
-                    <td className="amount">¥{p.amount.toLocaleString()}</td>
+                    <td className="amount">
+                      <div>¥{p.amount.toLocaleString()}</div>
+                      {p.calcExpression && (
+                        <button
+                          className="btn-show-expr"
+                          onClick={() => setExpandedExprId(expandedExprId === p.id ? null : p.id)}
+                        >
+                          {expandedExprId === p.id ? '式を閉じる' : '式を見る'}
+                        </button>
+                      )}
+                      {expandedExprId === p.id && (
+                        <div className="expr-detail">{p.calcExpression}</div>
+                      )}
+                    </td>
                     <td className="row-actions">
                       <button className="btn-edit" onClick={() => handleEditStart(p)}>編集</button>
                       <button className="btn-delete" onClick={() => handleDelete(p.id)}>削除</button>

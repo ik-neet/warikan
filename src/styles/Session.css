@@ -424,3 +424,200 @@ td.negative {
   flex-direction: column;
   gap: 4px;
 }
+
+/* 電卓ボタン・金額行 */
+.amount-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.amount-row input {
+  flex: 1;
+}
+
+.btn-calc {
+  background: #4f7df0;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.btn-calc:hover { background: #3a6de0; }
+
+.calc-expr-preview {
+  font-size: 12px;
+  color: #718096;
+  background: #edf2ff;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+/* 計算式照会 */
+.btn-show-expr {
+  display: block;
+  background: none;
+  border: none;
+  color: #4f7df0;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 0;
+  text-decoration: underline;
+  text-align: right;
+  width: 100%;
+}
+.btn-show-expr:hover { color: #3a6de0; }
+
+.expr-detail {
+  font-size: 11px;
+  color: #718096;
+  background: #edf2ff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  margin-top: 2px;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* 電卓モーダル */
+.calc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.calc-modal {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 32px;
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calc-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a202c;
+}
+
+.calc-close {
+  background: #f0f0f0;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 13px;
+  cursor: pointer;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.calc-close:hover { background: #e2e8f0; }
+
+.calc-display {
+  background: #f7fafc;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.calc-expr {
+  font-size: 20px;
+  color: #1a202c;
+  font-weight: 500;
+  word-break: break-all;
+  text-align: right;
+}
+
+.calc-result {
+  font-size: 14px;
+  color: #4f7df0;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.calc-btn {
+  background: #f7fafc;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  height: 56px;
+  cursor: pointer;
+  color: #1a202c;
+  transition: background 0.1s;
+}
+.calc-btn:hover { background: #e2e8f0; }
+.calc-btn:active { background: #cbd5e0; }
+
+.calc-btn-wide {
+  grid-column: span 2;
+}
+
+.calc-btn-func {
+  background: #edf2ff;
+  color: #4f7df0;
+  font-size: 16px;
+}
+.calc-btn-func:hover { background: #dbe6ff; }
+
+.calc-btn-op {
+  background: #ebf8ff;
+  color: #3182ce;
+}
+.calc-btn-op:hover { background: #bee3f8; }
+
+.calc-btn-eval {
+  background: #e6fffa;
+  color: #319795;
+}
+.calc-btn-eval:hover { background: #b2f5ea; }
+
+.calc-btn-confirm {
+  background: #4f7df0;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+.calc-btn-confirm:hover:not(:disabled) { background: #3a6de0; }
+.calc-btn-confirm:disabled { opacity: 0.4; cursor: default; }

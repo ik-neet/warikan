@@ -43,7 +43,7 @@ export default function NewSession() {
         createdAt: serverTimestamp(),
       })
       const saved = JSON.parse(localStorage.getItem('warikan_sessions') || '[]')
-      saved.unshift({ id: docRef.id, expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000 })
+      saved.unshift({ id: docRef.id, expiresAt: Date.now() + 14 * 24 * 60 * 60 * 1000 })
       localStorage.setItem('warikan_sessions', JSON.stringify(saved))
       navigate(`/session/${docRef.id}`)
     } catch (e) {

@@ -225,12 +225,9 @@ export default function Session() {
     setSavingImage(true)
     try {
       const dataUrl = await toPng(captureRef.current, { cacheBust: true, backgroundColor: '#f0f4f8' })
-      const link = document.createElement('a')
-      link.download = `warikan-${id}.png`
-      link.href = dataUrl
-      link.click()
+      window.open(dataUrl, '_blank')
     } catch {
-      alert('画像の保存に失敗しました')
+      alert('画像の表示に失敗しました')
     }
     setSavingImage(false)
   }
@@ -521,9 +518,6 @@ export default function Session() {
                     <span className="arrow">→</span>
                     <span className="creditor">{s.to}</span>
                     <span className="settlement-amount">¥{s.amount.toLocaleString()}</span>
-                    <a href="paypay://" className="btn-paypay">
-                      PayPayで送金
-                    </a>
                   </li>
                 ))}
               </ul>
@@ -535,7 +529,7 @@ export default function Session() {
       {payments.length > 0 && (
         <div className="save-image-row">
           <button className="btn-save-image" onClick={handleSaveImage} disabled={savingImage}>
-            {savingImage ? '保存中...' : '画像として保存'}
+            {savingImage ? '生成中...' : '画像として表示'}
           </button>
         </div>
       )}

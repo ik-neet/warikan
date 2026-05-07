@@ -583,6 +583,13 @@ td.negative {
   gap: 4px;
 }
 
+.calc-base-expr {
+  font-size: 13px;
+  color: #a0aec0;
+  text-align: right;
+  word-break: break-all;
+}
+
 .calc-expr {
   font-size: 20px;
   color: #1a202c;

@@ -36,6 +36,7 @@ const BUTTONS = [
 
 export default function CalcModal({ onConfirm, onClose }) {
   const [expr, setExpr] = useState('')
+  const [baseExpr, setBaseExpr] = useState('')
 
   const result = useMemo(() => evalExpr(expr), [expr])
 
@@ -43,21 +44,28 @@ export default function CalcModal({ onConfirm, onClose }) {
     switch (btn.type) {
       case 'ac':
         setExpr('')
+        setBaseExpr('')
         break
       case 'back':
         setExpr(e => e.slice(0, -1))
+        setBaseExpr('')
         break
       case 'eval':
-        if (result !== null) setExpr(String(result))
+        if (result !== null) {
+          setBaseExpr(expr)
+          setExpr(String(result))
+        }
         break
       case 'confirm':
-        if (result !== null && result > 0) onConfirm(result, expr)
+        if (result !== null && result > 0) onConfirm(result, baseExpr || expr)
         break
       case 'digit':
         setExpr(e => e + btn.label)
+        setBaseExpr('')
         break
       case 'op':
         setExpr(e => e + btn.value)
+        setBaseExpr('')
         break
     }
   }
@@ -70,9 +78,16 @@ export default function CalcModal({ onConfirm, onClose }) {
           <button className="calc-close" onClick={onClose}>✕</button>
         </div>
         <div className="calc-display">
-          <div className="calc-expr">{expr || '0'}</div>
+          {baseExpr ? (
+            <>
+              <div className="calc-base-expr">{baseExpr}</div>
+              <div className="calc-expr">{expr}</div>
+            </>
+          ) : (
+            <div className="calc-expr">{expr || '0'}</div>
+          )}
           <div className="calc-result">
-            {result !== null ? `= ${result.toLocaleString()}` : ' '}
+            {!baseExpr && result !== null ? `= ${result.toLocaleString()}` : ' '}
           </div>
         </div>
         <div className="calc-grid">

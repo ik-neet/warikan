@@ -378,6 +378,32 @@ td.negative {
 }
 .btn-paypay:hover { background: #c50000; }
 
+.capture-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.save-image-row {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-save-image {
+  background: #805ad5;
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  touch-action: manipulation;
+}
+.btn-save-image:hover { background: #6b46c1; }
+.btn-save-image:disabled { opacity: 0.6; cursor: default; }
+
 .section-delete {
   display: flex;
   justify-content: center;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   doc, getDoc, collection, addDoc, onSnapshot,
@@ -7,6 +7,7 @@ import {
 import { db } from '../firebase'
 import { calcSettlements } from '../utils/calcSettlements'
 import CalcModal from '../components/CalcModal'
+import { toPng } from 'html-to-image'
 import '../styles/Session.css'
 
 export default function Session() {
@@ -28,6 +29,9 @@ export default function Session() {
   const [newMember, setNewMember] = useState('')
   const [addingMember, setAddingMember] = useState(false)
   const [memberError, setMemberError] = useState('')
+
+  const captureRef = useRef(null)
+  const [savingImage, setSavingImage] = useState(false)
 
   const [listEditMode, setListEditMode] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -216,6 +220,21 @@ export default function Session() {
     balance: Math.round(balanceMap[m] || 0),
   }))
 
+  const handleSaveImage = async () => {
+    if (!captureRef.current) return
+    setSavingImage(true)
+    try {
+      const dataUrl = await toPng(captureRef.current, { cacheBust: true, backgroundColor: '#f0f4f8' })
+      const link = document.createElement('a')
+      link.download = `warikan-${id}.png`
+      link.href = dataUrl
+      link.click()
+    } catch {
+      alert('画像の保存に失敗しました')
+    }
+    setSavingImage(false)
+  }
+
   const handleCalcConfirm = (amount, expression) => {
     setForm(f => ({ ...f, amount: String(amount), calcExpression: expression }))
     setShowCalc(false)
@@ -330,6 +349,7 @@ export default function Session() {
         </div>
       </div>
 
+      <div ref={captureRef} className="capture-area">
       <div className="section">
         <div className="section-header">
           <h2>支払い一覧</h2>
@@ -510,6 +530,14 @@ export default function Session() {
             )}
           </div>
         </>
+      )}
+      </div>
+      {payments.length > 0 && (
+        <div className="save-image-row">
+          <button className="btn-save-image" onClick={handleSaveImage} disabled={savingImage}>
+            {savingImage ? '保存中...' : '画像として保存'}
+          </button>
+        </div>
       )}
       <div className="section-delete">
         <button className="btn-delete-session" onClick={handleDeleteSession}>

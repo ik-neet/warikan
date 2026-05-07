@@ -645,6 +645,12 @@ td.negative {
 }
 .calc-btn-op:hover { background: #bee3f8; }
 
+.calc-btn-paren {
+  background: #f0fff4;
+  color: #276749;
+}
+.calc-btn-paren:hover { background: #c6f6d5; }
+
 .calc-btn-eval {
   background: #e6fffa;
   color: #319795;

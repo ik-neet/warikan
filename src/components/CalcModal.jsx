@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 
 function evalExpr(expr) {
-  if (!expr || !/^[\d\s+\-*/.]+$/.test(expr.trim())) return null
+  if (!expr || !/^[\d\s+\-*/.()]+$/.test(expr.trim())) return null
   try {
     // eslint-disable-next-line no-new-func
     const val = Function('"use strict"; return (' + expr + ')')()
@@ -13,25 +13,27 @@ function evalExpr(expr) {
 }
 
 const BUTTONS = [
+  { label: '(',   type: 'paren' },
+  { label: ')',   type: 'paren' },
   { label: 'AC',  type: 'ac' },
   { label: '←',  type: 'back' },
-  { label: '÷',  type: 'op', value: '/' },
-  { label: '×',  type: 'op', value: '*' },
   { label: '7',   type: 'digit' },
   { label: '8',   type: 'digit' },
   { label: '9',   type: 'digit' },
-  { label: '−',  type: 'op', value: '-' },
+  { label: '÷',  type: 'op', value: '/' },
   { label: '4',   type: 'digit' },
   { label: '5',   type: 'digit' },
   { label: '6',   type: 'digit' },
-  { label: '+',   type: 'op', value: '+' },
+  { label: '×',  type: 'op', value: '*' },
   { label: '1',   type: 'digit' },
   { label: '2',   type: 'digit' },
   { label: '3',   type: 'digit' },
-  { label: '=',   type: 'eval' },
+  { label: '−',  type: 'op', value: '-' },
   { label: '0',   type: 'digit', wide: true },
   { label: '.',   type: 'digit' },
-  { label: '確定', type: 'confirm' },
+  { label: '+',   type: 'op', value: '+' },
+  { label: '=',   type: 'eval', wide: true },
+  { label: '確定', type: 'confirm', wide: true },
 ]
 
 export default function CalcModal({ onConfirm, onClose }) {
@@ -60,6 +62,7 @@ export default function CalcModal({ onConfirm, onClose }) {
         if (result !== null && result > 0) onConfirm(result, baseExpr || expr)
         break
       case 'digit':
+      case 'paren':
         setExpr(e => e + btn.label)
         setBaseExpr('')
         break
@@ -87,7 +90,7 @@ export default function CalcModal({ onConfirm, onClose }) {
             <div className="calc-expr">{expr || '0'}</div>
           )}
           <div className="calc-result">
-            {!baseExpr && result !== null ? `= ${result.toLocaleString()}` : ' '}
+            {!baseExpr && result !== null ? `= ${result.toLocaleString()}` : ' '}
           </div>
         </div>
         <div className="calc-grid">
@@ -97,6 +100,7 @@ export default function CalcModal({ onConfirm, onClose }) {
               className={[
                 'calc-btn',
                 btn.wide ? 'calc-btn-wide' : '',
+                btn.type === 'paren' ? 'calc-btn-paren' : '',
                 btn.type === 'op' ? 'calc-btn-op' : '',
                 btn.type === 'ac' || btn.type === 'back' ? 'calc-btn-func' : '',
                 btn.type === 'eval' ? 'calc-btn-eval' : '',

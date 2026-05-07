@@ -32,6 +32,7 @@ export default function Session() {
 
   const captureRef = useRef(null)
   const [savingImage, setSavingImage] = useState(false)
+  const [imageDataUrl, setImageDataUrl] = useState(null)
 
   const [listEditMode, setListEditMode] = useState(false)
   const [editingId, setEditingId] = useState(null)
@@ -225,9 +226,9 @@ export default function Session() {
     setSavingImage(true)
     try {
       const dataUrl = await toPng(captureRef.current, { cacheBust: true, backgroundColor: '#f0f4f8' })
-      window.open(dataUrl, '_blank')
+      setImageDataUrl(dataUrl)
     } catch {
-      alert('画像の表示に失敗しました')
+      alert('画像の生成に失敗しました')
     }
     setSavingImage(false)
   }
@@ -241,6 +242,17 @@ export default function Session() {
     <div className="session-container">
       {showCalc && (
         <CalcModal onConfirm={handleCalcConfirm} onClose={() => setShowCalc(false)} />
+      )}
+      {imageDataUrl && (
+        <div className="image-overlay" onClick={() => setImageDataUrl(null)}>
+          <div className="image-modal" onClick={e => e.stopPropagation()}>
+            <div className="image-modal-header">
+              <span className="image-modal-title">長押しで保存できます</span>
+              <button className="image-modal-close" onClick={() => setImageDataUrl(null)}>✕</button>
+            </div>
+            <img src={imageDataUrl} alt="精算画像" className="image-modal-img" />
+          </div>
+        </div>
       )}
       <div className="session-header">
         <button className="btn-back" onClick={() => navigate('/')}>← ホーム</button>

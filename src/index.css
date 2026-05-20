@@ -71,32 +71,16 @@ body {
 .site-brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: #29251f;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 700;
   line-height: 1;
 }
 
-.site-brand-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #29251f;
-  border-radius: 5px;
-  background: #29251f;
-  color: #fffdf8;
-  font-size: 12px;
-  letter-spacing: 0;
+.site-brand-logo {
+  display: block;
+  width: 132px;
+  height: auto;
 }
 
-.site-brand-text {
-  border-bottom: 1px solid transparent;
-}
-
-.site-brand:hover .site-brand-text {
-  border-bottom-color: currentColor;
+.site-brand:hover {
+  opacity: 0.82;
 }

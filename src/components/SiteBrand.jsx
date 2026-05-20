@@ -7,8 +7,7 @@ export default function SiteBrand({ className = '' }) {
       rel="noreferrer"
       aria-label="ik-neet.com を開く"
     >
-      <span className="site-brand-mark" aria-hidden="true">ik</span>
-      <span className="site-brand-text">ik-neet.com</span>
+      <img className="site-brand-logo" src="/ik-neet-logo.svg" alt="ik-neet.com" />
     </a>
   )
 }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { doc, getDoc, deleteDoc, collection, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
+import SiteBrand from '../components/SiteBrand'
 import '../styles/Home.css'
 
 const STORAGE_KEY = 'warikan_sessions'
@@ -28,7 +29,9 @@ export default function Home() {
           const snap = await getDocs(collection(db, 'sessions', s.id, 'payments'))
           await Promise.all(snap.docs.map(d => deleteDoc(d.ref)))
           await deleteDoc(doc(db, 'sessions', s.id))
-        } catch {}
+        } catch {
+          // 期限切れ削除はベストエフォートで続行する。
+        }
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(valid))
 
@@ -37,7 +40,9 @@ export default function Home() {
         try {
           const snap = await getDoc(doc(db, 'sessions', s.id))
           if (snap.exists()) results.push({ id: s.id, expiresAt: s.expiresAt, ...snap.data() })
-        } catch {}
+        } catch {
+          // 読めないセッションは一覧から外す。
+        }
       }
       results.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0))
       setSessions(results)
@@ -48,10 +53,11 @@ export default function Home() {
 
   return (
     <div className="home-container">
+      <SiteBrand className="home-brand" />
       <div className="home-card">
-        <div className="home-icon">💰</div>
-        <h1>割り勘アプリ</h1>
-        <p>みんなの支払いをかんたんに管理・精算できます</p>
+        <p className="home-kicker">Warikan</p>
+        <h1>割り勘メモ</h1>
+        <p>支払いを入れて、最後に誰が誰へいくら払うかだけ確認できます。</p>
         <button className="btn-primary" onClick={() => navigate('/new')}>
           新規作成
         </button>

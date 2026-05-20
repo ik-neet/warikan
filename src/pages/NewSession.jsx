@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { collection, addDoc, serverTimestamp, getCountFromServer } from 'firebase/firestore'
 import { db } from '../firebase'
+import SiteBrand from '../components/SiteBrand'
 import '../styles/NewSession.css'
 
 export default function NewSession() {
@@ -46,7 +47,7 @@ export default function NewSession() {
       saved.unshift({ id: docRef.id, expiresAt: Date.now() + 14 * 24 * 60 * 60 * 1000 })
       localStorage.setItem('warikan_sessions', JSON.stringify(saved))
       navigate(`/session/${docRef.id}`)
-    } catch (e) {
+    } catch {
       setError('セッションの作成に失敗しました')
       setLoading(false)
     }
@@ -55,6 +56,7 @@ export default function NewSession() {
   return (
     <div className="new-session-container">
       <div className="new-session-card">
+        <SiteBrand />
         <button className="btn-back" onClick={() => navigate('/')}>← 戻る</button>
         <h1>新規作成</h1>
         <p>参加するメンバーの名前を入力してください</p>

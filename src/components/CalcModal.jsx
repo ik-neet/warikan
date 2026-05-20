@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react'
 function evalExpr(expr) {
   if (!expr || !/^[\d\s+\-*/.()]+$/.test(expr.trim())) return null
   try {
-    // eslint-disable-next-line no-new-func
     const val = Function('"use strict"; return (' + expr + ')')()
     if (!isFinite(val) || isNaN(val)) return null
     return Math.round(val * 100) / 100

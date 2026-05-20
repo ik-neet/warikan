@@ -7,6 +7,7 @@ import {
 import { db } from '../firebase'
 import { calcSettlements } from '../utils/calcSettlements'
 import CalcModal from '../components/CalcModal'
+import SiteBrand from '../components/SiteBrand'
 import { toPng } from 'html-to-image'
 import '../styles/Session.css'
 
@@ -225,7 +226,7 @@ export default function Session() {
     if (!captureRef.current) return
     setSavingImage(true)
     try {
-      const dataUrl = await toPng(captureRef.current, { cacheBust: true, backgroundColor: '#f0f4f8' })
+      const dataUrl = await toPng(captureRef.current, { cacheBust: true, backgroundColor: '#f6f3ed' })
       setImageDataUrl(dataUrl)
     } catch {
       alert('画像の生成に失敗しました')
@@ -256,6 +257,7 @@ export default function Session() {
       )}
       <div className="session-header">
         <button className="btn-back" onClick={() => navigate('/')}>← ホーム</button>
+        <SiteBrand className="session-brand" />
         <h1>支払管理画面</h1>
         <button className="btn-share" onClick={handleCopyUrl}>
           {copied ? 'コピーしました！' : 'URLをコピー'}
@@ -491,7 +493,7 @@ export default function Session() {
             <h2>支払い集計</h2>
             {advancePayments.length > 0 ? (
               <>
-                <p className="total-label">通常合計: <strong>¥{normalTotal.toLocaleString()}</strong>　1人あたり: <strong>¥{Math.ceil(perPerson).toLocaleString()}</strong></p>
+                <p className="total-label">通常合計: <strong>¥{normalTotal.toLocaleString()}</strong> 1人あたり: <strong>¥{Math.ceil(perPerson).toLocaleString()}</strong></p>
                 <p className="total-label">立て替え合計: <strong>¥{advanceTotal.toLocaleString()}</strong></p>
               </>
             ) : (

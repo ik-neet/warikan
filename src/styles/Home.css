@@ -3,35 +3,43 @@
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  padding: 40px 20px;
-  gap: 20px;
+  padding: 28px 20px 40px;
+  gap: 18px;
+}
+
+.home-brand {
+  align-self: center;
 }
 
 .home-card {
-  background: white;
-  border-radius: 16px;
-  padding: 48px 40px;
-  text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  max-width: 400px;
+  background: #fffdf8;
+  border: 1px solid #ddd6ca;
+  border-radius: 8px;
+  padding: 36px 32px;
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(41, 37, 31, 0.05);
+  max-width: 420px;
   width: 100%;
 }
 
-.home-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+.home-kicker {
+  color: #8a6f3d;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-transform: uppercase;
 }
 
 .home-card h1 {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #1a202c;
+  color: #29251f;
 }
 
 .home-card p {
-  color: #666;
-  margin-bottom: 32px;
+  color: #5f5a51;
+  margin-bottom: 28px;
   line-height: 1.6;
 }
 
@@ -42,18 +50,19 @@
 }
 
 .sessions-list-card {
-  background: white;
-  border-radius: 16px;
+  background: #fffdf8;
+  border: 1px solid #ddd6ca;
+  border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  max-width: 400px;
+  box-shadow: 0 1px 2px rgba(41, 37, 31, 0.05);
+  max-width: 420px;
   width: 100%;
 }
 
 .sessions-list-card h2 {
   font-size: 16px;
   font-weight: 700;
-  color: #4a5568;
+  color: #504a42;
   margin-bottom: 14px;
 }
 
@@ -69,22 +78,23 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
-  background: #f7fafc;
-  border-radius: 10px;
+  background: #f8f4eb;
+  border: 1px solid #ebe3d6;
+  border-radius: 6px;
   text-decoration: none;
   transition: background 0.15s;
 }
-.session-item:hover { background: #ebf0ff; }
+.session-item:hover { background: #eef3ef; border-color: #c4d0ca; }
 
 .session-members {
   font-size: 15px;
   font-weight: 600;
-  color: #1a202c;
+  color: #29251f;
 }
 
 .session-expire {
   font-size: 12px;
-  color: #a0aec0;
+  color: #817a70;
   white-space: nowrap;
   margin-left: 8px;
 }

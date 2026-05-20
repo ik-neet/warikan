@@ -3,14 +3,15 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
-  padding: 40px 20px;
+  padding: 32px 20px;
 }
 
 .new-session-card {
-  background: white;
-  border-radius: 16px;
+  background: #fffdf8;
+  border: 1px solid #ddd6ca;
+  border-radius: 8px;
   padding: 32px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 2px rgba(41, 37, 31, 0.05);
   max-width: 480px;
   width: 100%;
   display: flex;
@@ -21,11 +22,11 @@
 .new-session-card h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #1a202c;
+  color: #29251f;
 }
 
 .new-session-card > p {
-  color: #666;
+  color: #5f5a51;
   font-size: 14px;
 }
 
@@ -44,27 +45,29 @@
 .member-row input {
   flex: 1;
   padding: 10px 12px;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 8px;
+  border: 1px solid #cfc7ba;
+  border-radius: 6px;
   font-size: 15px;
   outline: none;
   transition: border-color 0.2s;
+  background: #fffefa;
+  color: #29251f;
 }
 
 .member-row input:focus {
-  border-color: #4f7df0;
+  border-color: #2f5d50;
 }
 
 .btn-remove {
   background: none;
   border: none;
-  color: #999;
+  color: #817a70;
   font-size: 16px;
   cursor: pointer;
   padding: 6px;
   border-radius: 4px;
 }
-.btn-remove:hover { color: #e53e3e; background: #fff5f5; }
+.btn-remove:hover { color: #b33a2e; background: #f8eae6; }
 
 .new-session-card .btn-primary {
   width: 100%;

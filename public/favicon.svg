@@ -1,9 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
   <title id="title">warikan favicon</title>
-  <desc id="desc">Minimal favicon for the warikan app using a yen symbol on the app's green brand color.</desc>
+  <desc id="desc">Split-bill favicon for the warikan app using the app's green and paper colors.</desc>
   <rect width="64" height="64" rx="16" fill="#2f5d50"/>
-  <path d="M22 20l10 12 10-12" fill="none" stroke="#fffdf8" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M24 33h16" stroke="#fffdf8" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M24 40h16" stroke="#fffdf8" stroke-width="4.5" stroke-linecap="round"/>
-  <path d="M32 32v14" stroke="#fffdf8" stroke-width="4.5" stroke-linecap="round"/>
+  <rect x="14" y="12" width="36" height="40" rx="10" fill="#fffdf8"/>
+  <path d="M32 18v28" stroke="#d8e1dc" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 4"/>
+  <circle cx="25" cy="24" r="3" fill="#2f5d50"/>
+  <circle cx="39" cy="24" r="3" fill="#2f5d50"/>
+  <path d="M22 34h20" stroke="#b7c8c1" stroke-width="3" stroke-linecap="round"/>
+  <path d="M24 41l4.5 5 4.5-5" fill="none" stroke="#2f5d50" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M24 38h9" stroke="#2f5d50" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M28.5 43v5" stroke="#2f5d50" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M31 41l4.5 5 4.5-5" fill="none" stroke="#8a6f3d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M31 38h9" stroke="#8a6f3d" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M35.5 43v5" stroke="#8a6f3d" stroke-width="3.5" stroke-linecap="round"/>
 </svg>

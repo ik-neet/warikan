@@ -5,10 +5,13 @@
 }
 
 body {
-  font-family: Inter, 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  font-family: 'Segoe UI', 'Noto Sans JP', 'Yu Gothic UI', 'Hiragino Sans', Meiryo, sans-serif;
   background: #f6f3ed;
   color: #29251f;
   min-height: 100vh;
+  font-feature-settings: 'palt' 1, 'tnum' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {

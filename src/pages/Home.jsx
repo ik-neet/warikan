@@ -54,7 +54,6 @@ export default function Home() {
   return (
     <div className="home-container">
       <div className="home-card">
-        <p className="home-kicker">Warikan</p>
         <h1>割り勘メモ</h1>
         <p>支払いを入れて、最後に誰が誰へいくら払うかだけ確認できます。</p>
         <button className="btn-primary" onClick={() => navigate('/new')}>

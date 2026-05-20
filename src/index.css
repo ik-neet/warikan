@@ -84,3 +84,14 @@ body {
 .site-brand:hover {
   opacity: 0.82;
 }
+
+.app-footer {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 0;
+}
+
+.app-footer .site-brand-logo {
+  width: 112px;
+  opacity: 0.86;
+}

@@ -53,7 +53,6 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <SiteBrand className="home-brand" />
       <div className="home-card">
         <p className="home-kicker">Warikan</p>
         <h1>割り勘メモ</h1>
@@ -80,6 +79,9 @@ export default function Home() {
           </ul>
         </div>
       )}
+      <footer className="app-footer">
+        <SiteBrand />
+      </footer>
     </div>
   )
 }

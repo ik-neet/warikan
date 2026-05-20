@@ -257,7 +257,6 @@ export default function Session() {
       )}
       <div className="session-header">
         <button className="btn-back" onClick={() => navigate('/')}>← ホーム</button>
-        <SiteBrand className="session-brand" />
         <h1>支払管理画面</h1>
         <button className="btn-share" onClick={handleCopyUrl}>
           {copied ? 'コピーしました！' : 'URLをコピー'}
@@ -552,6 +551,9 @@ export default function Session() {
           このセッションを削除
         </button>
       </div>
+      <footer className="app-footer">
+        <SiteBrand />
+      </footer>
     </div>
   )
 }

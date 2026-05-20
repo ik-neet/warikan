@@ -56,7 +56,6 @@ export default function NewSession() {
   return (
     <div className="new-session-container">
       <div className="new-session-card">
-        <SiteBrand />
         <button className="btn-back" onClick={() => navigate('/')}>← 戻る</button>
         <h1>新規作成</h1>
         <p>参加するメンバーの名前を入力してください</p>
@@ -92,6 +91,9 @@ export default function NewSession() {
           {loading ? '作成中...' : 'URLを生成する'}
         </button>
       </div>
+      <footer className="app-footer">
+        <SiteBrand />
+      </footer>
     </div>
   )
 }

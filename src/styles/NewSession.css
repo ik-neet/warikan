@@ -1,9 +1,15 @@
 .new-session-container {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
   padding: 32px 20px;
+}
+
+.new-session-container .new-session-card,
+.new-session-container .app-footer {
+  align-self: center;
 }
 
 .new-session-card {

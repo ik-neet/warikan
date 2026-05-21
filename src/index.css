@@ -80,7 +80,7 @@ body {
 
 .site-brand-logo {
   display: block;
-  width: 132px;
+  width: min(136px, 38vw);
   height: auto;
 }
 
@@ -95,6 +95,6 @@ body {
 }
 
 .app-footer .site-brand-logo {
-  width: 128px;
-  opacity: 0.86;
+  width: min(124px, 36vw);
+  opacity: 0.88;
 }

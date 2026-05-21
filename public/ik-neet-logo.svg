@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="421" height="120" viewBox="0 0 421 120" role="img" aria-labelledby="title desc">
-  <title id="title">ik-neet.com</title>
-  <desc id="desc">Transparent logo with a bracketed i motif and rounded bold wordmark for ik-neet.com.</desc>
+  <title id="title">ik-neet.com green logo variant</title>
+  <desc id="desc">ik-neet.com logo with a green i motif.</desc>
   <g fill="none" fill-rule="evenodd">
-    <path d="M31 35H19v50h12" stroke="#B7DFF0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M87 35h12v50H87" stroke="#B7DFF0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="59" cy="35" r="8" fill="#159BD3"/>
-    <rect x="51" y="51" width="16" height="36" rx="8" fill="#159BD3"/>
+    <path d="M31 35H19v50h12" stroke="#BFE7D8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M87 35h12v50H87" stroke="#BFE7D8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="59" cy="35" r="8" fill="#27A56F"/>
+    <rect x="51" y="51" width="16" height="36" rx="8" fill="#27A56F"/>
     <text x="132" y="77"
           fill="#1F2D3D"
           font-family="'Arial Rounded MT Bold', 'Trebuchet MS', Arial, sans-serif"
